@@ -2,6 +2,5 @@
 build/
 hxml/
 
-build.hxml
 compile.bat
 export_classes.info
