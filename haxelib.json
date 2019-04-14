@@ -1,0 +1,14 @@
+{
+  "name": "Slippi2Video",
+  "url" : "https://github.com/nachoverdon/Slippi2VideoHx/",
+  "license": "MIT",
+  "tags": [
+      "project", "slippi", "super", "smash", "bros", "melee", "replay", "video",
+      "obs", "studio", "websocket", "converter"
+    ],
+  "description": "A script to launch, sync and record Project Slippi replays using OBS Studio through OBS Websocket",
+  "version": "1.0.0",
+  "classPath": "src/",
+  "releasenote": "Initial release.",
+  "contributors": ["nachoverdon"]
+}

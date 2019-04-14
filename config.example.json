@@ -1,0 +1,11 @@
+{
+    "obs": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
+    "melee": "Z:\\Games\\GAME ISOs\\Melee 1.02.iso",
+    "replays": "C:\\Users\\bazoo\\SlippiReplays",
+    "dolphin": "C:\\Users\\bazoo\\AppData\\Roaming\\Slippi Launcher\\dolphin\\Dolphin.exe",
+    "obsws": {
+        "port": "4444",
+        "password": "slippi2video"
+    },
+    "recursive": true
+}
