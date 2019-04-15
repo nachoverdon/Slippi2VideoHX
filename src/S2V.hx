@@ -1,7 +1,6 @@
 import haxe.io.Path;
 import cpp.vm.Thread;
 import sys.io.Process;
-import sys.FileSystem;
 import s2v.FileHandler;
 import s2v.WebSocketObs;
 
@@ -14,7 +13,7 @@ class S2V {
 	static function main() {
 		cfg = FileHandler.readConfig();
 
-		var replays = findReplays(cfg.replays);
+		var replays = FileHandler.findReplays(cfg.replays, cfg.recursive);
 
 		Sys.println('Replays found: ${replays.length}');
 
@@ -28,12 +27,20 @@ class S2V {
 
 		ws = new WebSocketObs('localhost', cfg.obs.port, cfg.obs.password, true);
 
+		var oldRecFolder: String;
+
 		function onReady(message: String) {
 			Sys.println('Connected.');
+
+			ws.getRecordingFolder();
+			if (cfg.obs.videos != null) ws.setRecordingFolder(cfg.obs.videos);
+
 			// For each replay, load slippi and record video until the replay
 			// is finished.
-			for (replay in replays) convert(replay);
+			for (replay in replays) recordVideo(replay);
+			ws.setRecordingFolder(oldRecFolder);
 
+			Sys.sleep(2);
 			// Closes the websocket, Dolphin and OBS
 			killProcesses();
 		}
@@ -48,24 +55,13 @@ class S2V {
 			Sys.exit(0);
 		}
 
-		ws.connect(onReady, onError);
-	}
+		function onMessageString(message: String) {
+			var req = haxe.Json.parse(message);
 
-	static function findReplays(folder: String): Array<String> {
-		var replays: Array<String> = new Array<String>();
-
-		for (file in FileSystem.readDirectory(folder)) {
-			var absPath = '$folder\\$file';
-
-			if (cfg.recursive && FileSystem.isDirectory(absPath)) {
-				replays = replays.concat(findReplays(absPath));
-				continue;
-			}
-
-			if (Path.extension(file) == 'slp') replays.push('$folder\\$file');
+			oldRecFolder = Reflect.field(req, 'rec-folder');
 		}
 
-		return replays;
+		ws.connect(onReady, onError, onMessageString);
 	}
 
 	// TODO: Not killing OBS process.
@@ -89,40 +85,25 @@ class S2V {
 			// Sys.command('taskkill /F /PID ${p.file}.exe');
 	}
 
+	static function recordVideo(replayPath: String): Void {
+		var frames = FileHandler.getFrames(replayPath);
+		// 2 seconds is aprox. the time it takes for the Game! screen to end.
+		// 116 frames? makes sense coz 116 + 124 = 240, 240 / 60 = 4 seconds.
+		var seconds: Float = (frames / 60) + (116 / 60);
 
-
-	static function convert(replayPath: String): Void {
-		var seconds = Math.ceil(FileHandler.getFrames(replayPath) / 60);
-		recordVideo(replayPath, seconds);
-	}
-
-	static function recordVideo(replayPath: String, seconds: Int): Void {
 		var path = new Path(replayPath);
 		Sys.println('Recording replay ${path.file}.${path.ext}...');
 
-		// As soon as it connects, starts the replay and records.
-		FileHandler.setReplay(replayPath);
 		// TODO: Replace this with a signal from Dolphin. as well as
 		// ws.stopRecording() (stdout/stderr? socket?)
-
-		Thread.create(function() {
-
-			while (true) {
-				var out = '';
-				try {
-					out = dolphinProcess.stdout.readLine();
-					Sys.println(out);
-				} catch (e: haxe.io.Eof) {
-					break;
-				}
-			}
-		});
+		// communicateWithDolphin(ws.startRecording, ws.stopRecording);
+		// As soon as it connects, starts the replay and records.
+		FileHandler.setReplay(replayPath);
 		ws.startRecording();
 
+
 		// Waits for the duration of the replay and then stops it.
-		// 2 seconds is aprox. the time it takes for the Game! screen to end.
-		// 116 frames? makes sense coz 116 + 124 = 240, 240 / 60 = 4 seconds.
-		Sys.sleep(seconds + (116 / 60));
+		Sys.sleep(seconds);
 		ws.stopRecording();
 		Sys.sleep(2);
 	}
@@ -141,5 +122,29 @@ class S2V {
 		Sys.setCwd(obsPath);
 		obsProcess = new Process(cfg.obs.exe);
 		Sys.setCwd(cwd);
+	}
+
+	static function communicateWithDolphin(onGameStart: Void -> Void, onGameEnd: Void -> Void): Void {
+		Thread.create(function() {
+			// Sys.println('Duration:\t[FRAMES: ${frames}]\t[SECONDS: $seconds]');
+			// Sys.println('lastFrame:\t[FRAMES: ${frames - 124}]\t[SECONDS: ${seconds - (124 / 60)}]');
+
+			while (true) {
+				var out = '';
+
+				try {
+					out = dolphinProcess.stdout.readLine();
+				} catch (e: haxe.io.Eof) {
+					break;
+				}
+
+				switch (out) {
+					case '[GAME_START]': onGameStart();
+					case '[GAME_END]': onGameEnd();
+				}
+
+			}
+
+		});
 	}
 }

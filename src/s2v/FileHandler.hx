@@ -2,6 +2,8 @@ package s2v;
 
 import haxe.Json;
 import sys.io.File;
+import haxe.io.Path;
+import sys.FileSystem;
 import slippihx.SlpDecoder;
 
 typedef Config = {
@@ -17,12 +19,12 @@ typedef ObsConfig = {
 	var exe: String;
 	var port: String;
 	var password: String;
-	@:optional var profile: Null<String>;
-	@:optional var scene: Null<String>;
-	@:optional var videos: String;
-	@:optional var rename: Bool;
-	@:optional var restructure: Bool;
-	@:optional var kill: Bool;
+	var profile: Null<String>;
+	var scene: Null<String>;
+	var videos: Null<String>;
+	var rename: Bool;
+	var restructure: Bool;
+	var kill: Bool;
 }
 
 typedef ReplayCommFile = {
@@ -73,5 +75,22 @@ class FileHandler {
 			throw 'Error parsing the replay $replayPath.\nMake sure the file ' +
 			'is not being used by other app.\n\t$e';
 		}
+	}
+
+	public static function findReplays(folder: String, ?recursive: Bool = false): Array<String> {
+		var replays: Array<String> = new Array<String>();
+
+		for (file in FileSystem.readDirectory(folder)) {
+			var absPath = '$folder\\$file';
+
+			if (recursive && FileSystem.isDirectory(absPath)) {
+				replays = replays.concat(findReplays(absPath, recursive));
+				continue;
+			}
+
+			if (Path.extension(file) == 'slp') replays.push('$folder\\$file');
+		}
+
+		return replays;
 	}
 }

@@ -30,13 +30,14 @@ class WebSocketObs {
         ws = WebSocket.create('ws://$ip:$port', ['echo-protocol'], null, debug);
     }
 
-    public function connect(onReady: String -> Void, onError: String -> Void) {
+    public function connect(onReady: String -> Void, onError: String -> Void,
+        onMessageString: String -> Void) {
         ws.onopen = function() {
-            sendRequest('GetAuthRequired');
+            sendRequest(ws, 'GetAuthRequired');
         };
 
         ws.onmessageString = function(message: String) {
-            var res: Dynamic = readResponse(message);
+            var res: Dynamic = Json.parse(message);
             var msgId: String = Reflect.field(res, 'message-id');
 
             if (res.status == 'error') throw 'Auth error: ${res.error}';
@@ -45,11 +46,17 @@ class WebSocketObs {
                 case 'GetAuthRequired':
                     auth(res);
                 case 'Authenticate':
-                    onReady(message);
+                    cpp.vm.Thread.create(function() {
+                        onReady(message);
+                    });
                 case 'StartRecording':
                     trace('Recording...');
                 case 'StopRecording':
                     trace('Stopped recording.');
+                case 'SetRecordingFolder':
+                    trace('Recording folder set.');
+                case 'GetRecordingFolder':
+                    onMessageString(message);
                 case 'Shutdown':
                     trace('Exiting...');
                 default:
@@ -73,18 +80,25 @@ class WebSocketObs {
     }
 
     public function close() {
-        // timer.stop();
-        // Timer.delay(function() {
-            timer.stop();
-            ws.close();
-        // }, 100);
+        timer.stop();
+        ws.close();
     }
 
-    public function startRecording() sendRequest('StartRecording');
+    public function startRecording() sendRequest(ws, 'StartRecording');
 
-    public function stopRecording() sendRequest('StopRecording');
+    public function stopRecording() sendRequest(ws, 'StopRecording');
 
-    public function shutdown() sendRequest('Shutdown');
+    public function setRecordingFolder(folder: String) {
+        sendRequest(ws, 'SetRecordingFolder', null, [{
+            name: 'rec-folder', value: folder
+        }]);
+    }
+
+    public function getRecordingFolder(): Void {
+        sendRequest(ws, 'GetRecordingFolder');
+    }
+
+    public function shutdown() sendRequest(ws, 'Shutdown');
 
     function auth(res: Dynamic) {
         if (res.authRequired) {
@@ -93,19 +107,15 @@ class WebSocketObs {
             var authResponseHash = Sha256.make(Bytes.ofString(secret + res.challenge));
             var authResponse = Base64.encode(authResponseHash);
 
-            sendAuth('Authenticate', authResponse);
+            sendAuth(ws, 'Authenticate', authResponse);
         }
     }
 
-    function sendAuth(msgId: String, auth: String): Void {
-        sendRequest('Authenticate', msgId, [{name: 'auth', value: auth}]);
+    static function sendAuth(ws: WebSocket, msgId: String, auth: String): Void {
+        sendRequest(ws, 'Authenticate', msgId, [{name: 'auth', value: auth}]);
     }
 
-    function readResponse(message: String): Dynamic {
-        return Json.parse(message);
-    }
-
-    function sendRequest(reqType: String, ?msgId: String = null, ?fields: Array<RequestField>): Void {
+    static function sendRequest(ws: WebSocket, reqType: String, ?msgId: String = null, ?fields: Array<RequestField>): Void {
         var req = {
             "request-type": reqType,
             "message-id": msgId == null ? reqType : msgId
