@@ -2,8 +2,9 @@ package s2v;
 
 import haxe.Json;
 import sys.io.File;
+import slippihx.SlpDecoder;
 
-typedef Cfg = {
+typedef Config = {
 	var melee: String;
 	var obs: ObsConfig;
 	var dolphin: String;
@@ -38,14 +39,15 @@ typedef ReplayInfo = {
 }
 
 class FileHandler {
-    public static function readConfig(): Cfg {
+    public static function readConfig(): Config {
         // TODO: Support cmd args? Sys.args() -> [];
 		try {
-        	var cfg: Cfg = Json.parse(File.getContent('config.json'));
+        	var cfg: Config = Json.parse(File.getContent('config.json'));
 			return cfg;
 		} catch (e: Dynamic) {
 			throw '[ERROR] Error parsing `config.json`. Make sure the data ' +
-			'is correct.\n\t$e';
+			'is correct and the structure is valid JSON and doesn\'t have ' +
+			'comments.\n\t$e';
 		}
     }
 
@@ -60,4 +62,16 @@ class FileHandler {
 			'file is not read only, being used by other app, etc.\n\t$e';
 		}
     }
+
+	public static function getFrames(replayPath: String): Int {
+		try {
+			var slp = SlpDecoder.fromFile(replayPath);
+			var duration: Int = slp.metadata.duration;
+			slp = null;
+			return duration;
+		} catch (e: Dynamic) {
+			throw 'Error parsing the replay $replayPath.\nMake sure the file ' +
+			'is not being used by other app.\n\t$e';
+		}
+	}
 }

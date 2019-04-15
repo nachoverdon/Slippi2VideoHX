@@ -1,15 +1,12 @@
-import haxe.Json;
-import s2v.FileHandler;
-import sys.io.File;
 import haxe.io.Path;
 import cpp.vm.Thread;
 import sys.io.Process;
 import sys.FileSystem;
+import s2v.FileHandler;
 import s2v.WebSocketObs;
-import slippihx.SlpDecoder;
 
 class S2V {
-	static var cfg: Cfg;
+	static var cfg: Config;
 	static var ws: WebSocketObs;
 	static var dolphinProcess: Process;
 	static var obsProcess: Process;
@@ -92,19 +89,10 @@ class S2V {
 			// Sys.command('taskkill /F /PID ${p.file}.exe');
 	}
 
-	static function getFrames(replayPath: String): Int {
-		try {
-			var slp = SlpDecoder.fromFile(replayPath);
-			var duration: Int = slp.metadata.duration;
-			slp = null;
-			return duration;
-		} catch (e: Dynamic) {
-			throw 'Error parsing the replay $replayPath';
-		}
-	}
+
 
 	static function convert(replayPath: String): Void {
-		var seconds = Math.ceil(getFrames(replayPath) / 60);
+		var seconds = Math.ceil(FileHandler.getFrames(replayPath) / 60);
 		recordVideo(replayPath, seconds);
 	}
 
