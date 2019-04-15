@@ -25,15 +25,14 @@ Script to convert Project Slippi replays into video using OBS
         // OBS Websocket info (OBS > Tools > Websocket server settings).
         "port": "4444",
         "password": "slippi2video",
+        // Path to the folder where the videos will be stored.
+        "videos": "Z:\\Other\\Videos",
         // Set to null to use the default.
         // NOT IMPLEMENTED YET
         "profile": null,
         // Set to null to use the default.
         // NOT IMPLEMENTED YET
         "scene": "Slippi"
-        // Path to the folder where the videos will be stored.
-        // NOT IMPLEMENTED YET
-        "videos": "Z:\\Other\\Videos",
         // Renames the video files with the name from the .slp files.
         // NOT IMPLEMENTED YET
         "rename": true,
