@@ -1,49 +1,25 @@
 import haxe.Json;
+import s2v.FileHandler;
 import sys.io.File;
 import haxe.io.Path;
+import cpp.vm.Thread;
 import sys.io.Process;
 import sys.FileSystem;
 import s2v.WebSocketObs;
 import slippihx.SlpDecoder;
 
-
-typedef Config = {
-	var melee: String;
-	var obs: String;
-	var dolphin: String;
-	var replays: String;
-	var obsws: ObsWsConfig;
-	var recursive: Bool;
-}
-
-typedef ObsWsConfig = {
-	var port: String;
-	var password: String;
-}
-
-typedef ReplayCommFile = {
-    var replay: String;
-	@:optional var mode: String;
-    @:optional var isRealTimeMode: Bool;
-    @:optional var queue: Array<ReplayInfo>;
-}
-
-typedef ReplayInfo = {
-	var path: String;
-	var startFrame: Int;
-	var lastFrame: Int;
-}
-
 class S2V {
-	static var cfg: Config;
+	static var cfg: Cfg;
 	static var ws: WebSocketObs;
 	static var dolphinProcess: Process;
 	static var obsProcess: Process;
 
 	static function main() {
-		readConfig();
+		cfg = FileHandler.readConfig();
 
 		var replays = findReplays(cfg.replays);
+
+		Sys.println('Replays found: ${replays.length}');
 
 		if (replays.length == 0) return;
 
@@ -53,11 +29,12 @@ class S2V {
 		// This should be enough time to load Dolphin and OBS.
 		Sys.sleep(5);
 
-		ws = new WebSocketObs('localhost', cfg.obsws.port, cfg.obsws.password);
+		ws = new WebSocketObs('localhost', cfg.obs.port, cfg.obs.password, true);
 
 		function onReady(message: String) {
-			trace('Connected.');
-			// for each replay, load slippi and record video
+			Sys.println('Connected.');
+			// For each replay, load slippi and record video until the replay
+			// is finished.
 			for (replay in replays) convert(replay);
 
 			// Closes the websocket, Dolphin and OBS
@@ -65,7 +42,12 @@ class S2V {
 		}
 
 		function onError(error: String) {
-			trace('[ERROR] There was an error while trying to connect to OBS Websocket\n$error');
+			Sys.println(
+				'[ERROR] OBS Websocket error:\n\t$error\n' +
+				'Please, check if your OBS Websocket settings on OBS Studio ' +
+				'(Tools > Websocket server settings) and your config.json ' +
+				'file match.'
+			);
 			Sys.exit(0);
 		}
 
@@ -76,26 +58,25 @@ class S2V {
 		var replays: Array<String> = new Array<String>();
 
 		for (file in FileSystem.readDirectory(folder)) {
-			if (cfg.recursive && FileSystem.isDirectory(file)) {
-				replays = replays.concat(findReplays('$folder\\$file'));
+			var absPath = '$folder\\$file';
+
+			if (cfg.recursive && FileSystem.isDirectory(absPath)) {
+				replays = replays.concat(findReplays(absPath));
 				continue;
 			}
 
-			if (Path.extension(file) == 'slp')
-				replays.push('$folder\\$file');
+			if (Path.extension(file) == 'slp') replays.push('$folder\\$file');
 		}
-
-		trace('Replays found: ${replays.length}');
 
 		return replays;
 	}
 
 	// TODO: Not killing OBS process.
 	static function killProcesses(): Void {
-		trace('Closing...');
+		Sys.println('Closing...');
 		ws.close();
 		dolphinProcess.kill();
-		// obsProcess.kill();
+		obsProcess.kill();
 		Sys.exit(0);
 
 		// Not working
@@ -109,13 +90,6 @@ class S2V {
 			// Sys.command('taskkill /F /PID ${p.file}.exe');
 			// p = new Path(cfg.obs);
 			// Sys.command('taskkill /F /PID ${p.file}.exe');
-	}
-
-	static function readConfig(): Void {
-		// TODO: Support cmd args? Sys.args() -> [];
-		var file = File.read('config.json', true);
-		var bytes = file.readAll();
-		cfg = Json.parse(bytes.getString(0, bytes.length));
 	}
 
 	static function getFrames(replayPath: String): Int {
@@ -136,32 +110,38 @@ class S2V {
 
 	static function recordVideo(replayPath: String, seconds: Int): Void {
 		var path = new Path(replayPath);
-		trace('Recording replay ${path.file}.${path.ext}...');
+		Sys.println('Recording replay ${path.file}.${path.ext}...');
 
 		// As soon as it connects, starts the replay and records.
-		watchReplay(replayPath);
+		FileHandler.setReplay(replayPath);
 		// TODO: Replace this with a signal from Dolphin. as well as
 		// ws.stopRecording() (stdout/stderr? socket?)
+
+		Thread.create(function() {
+
+			while (true) {
+				var out = '';
+				try {
+					out = dolphinProcess.stdout.readLine();
+					Sys.println(out);
+				} catch (e: haxe.io.Eof) {
+					break;
+				}
+			}
+		});
 		ws.startRecording();
 
 		// Waits for the duration of the replay and then stops it.
 		// 2 seconds is aprox. the time it takes for the Game! screen to end.
-		// 116 frames?
-		Sys.sleep(seconds + 2);
+		// 116 frames? makes sense coz 116 + 124 = 240, 240 / 60 = 4 seconds.
+		Sys.sleep(seconds + (116 / 60));
 		ws.stopRecording();
 		Sys.sleep(2);
 	}
 
-	static function watchReplay(replayPath: String): Void {
-		var commFile: ReplayCommFile = {
-			replay: replayPath
-		};
-		File.saveContent('s2v.json', Json.stringify(commFile));
-	}
-
 	static function launchDolphin(): Void {
-		watchReplay('');
-		trace('"${cfg.dolphin}" -i s2v.json -b -e "${cfg.melee}"');
+		FileHandler.setReplay('');
+
 		dolphinProcess = new Process(cfg.dolphin,
 			['-i', 's2v.json', '-b', '-e', cfg.melee]
 		);
@@ -169,9 +149,9 @@ class S2V {
 
 	static function launchObs(): Void {
 		var cwd = Sys.getCwd();
-		var obsPath = ~/[\\\/]obs\d+\.exe/i.replace(cfg.obs, '');
+		var obsPath = ~/[\\\/]obs\d+\.exe/i.replace(cfg.obs.exe, '');
 		Sys.setCwd(obsPath);
-		obsProcess = new Process(cfg.obs);
+		obsProcess = new Process(cfg.obs.exe);
 		Sys.setCwd(cwd);
 	}
 }

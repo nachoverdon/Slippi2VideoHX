@@ -1,11 +1,17 @@
 {
-    "obs": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
     "melee": "Z:\\Games\\GAME ISOs\\Melee 1.02.iso",
     "replays": "C:\\Users\\bazoo\\SlippiReplays",
-    "dolphin": "C:\\Users\\bazoo\\AppData\\Roaming\\Slippi Launcher\\dolphin\\Dolphin.exe",
-    "obsws": {
+    "dolphin": "C:\\Users\\bazoo\\AppData\\Roaming\\Slippi Desktop App\\dolphin\\Dolphin.exe",
+    "recursive": true,
+    "obs": {
+        "exe": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
         "port": "4444",
-        "password": "slippi2video"
-    },
-    "recursive": true
+        "password": "slippi2video",
+        "profile": null,
+        "scene": "Slippi",
+        "videos": "Z:\\Other\\Videos",
+        "rename": true,
+        "restructure": true,
+        "kill": true
+    }
 }

@@ -20,14 +20,14 @@ class WebSocketObs {
     var pw: String;
 
     public function new(?ip: String = 'localhost', ?port: String = '4444',
-    ?pw: String = 'slippi') {
+    ?pw: String = 'slippi', ?debug = false) {
         this.ip = ip;
         this.port = port;
         this.pw = pw;
 
         timer = new Timer(100);
 
-        ws = WebSocket.create('ws://$ip:$port', ['echo-protocol'], null, false);
+        ws = WebSocket.create('ws://$ip:$port', ['echo-protocol'], null, debug);
     }
 
     public function connect(onReady: String -> Void, onError: String -> Void) {

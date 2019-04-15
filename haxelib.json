@@ -10,5 +10,9 @@
   "version": "1.0.0",
   "classPath": "src/",
   "releasenote": "Initial release.",
-  "contributors": ["nachoverdon"]
+  "contributors": ["nachoverdon"],
+  "dependencies": {
+    "slippihx": "",
+    "haxe-ws": ""
+  }
 }
