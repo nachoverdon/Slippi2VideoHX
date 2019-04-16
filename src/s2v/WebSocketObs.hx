@@ -6,6 +6,7 @@ import haxe.io.Bytes;
 import haxe.crypto.Base64;
 import haxe.crypto.Sha256;
 import haxe.net.WebSocket;
+import sys.thread.Thread;
 
 typedef RequestField = {
     var name: String;
@@ -46,7 +47,7 @@ class WebSocketObs {
                 case 'GetAuthRequired':
                     auth(res);
                 case 'Authenticate':
-                    cpp.vm.Thread.create(function() {
+                    Thread.create(function() {
                         onReady(message);
                     });
                 case 'StartRecording':

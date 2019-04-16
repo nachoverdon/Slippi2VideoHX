@@ -2,9 +2,10 @@
 <project>
 
 	<meta title="Slippi2Video" package="com.sample.slippi2video" version="1.0.0" company="Company Name" />
-	<app main="ui.UI" path="build" file="Slippi2Video" />
+	<app main="ui.UI" path="build/UI" file="Slippi2Video" />
 
 	<window
+		resizable="false"
 		background="#22be34"
 		width="640"
 		height="480"

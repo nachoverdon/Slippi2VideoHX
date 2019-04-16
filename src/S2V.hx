@@ -1,5 +1,5 @@
 import haxe.io.Path;
-import cpp.vm.Thread;
+import sys.thread.Thread;
 import sys.io.Process;
 import s2v.FileHandler;
 import s2v.WebSocketObs;
