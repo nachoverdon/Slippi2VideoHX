@@ -11,6 +11,7 @@ class S2V {
 	static var obsProcess: Process;
 
 	static function main() {
+		onClose();
 		cfg = FileHandler.readConfig();
 
 		var replays = FileHandler.findReplays(cfg.replays, cfg.recursive);
@@ -67,6 +68,8 @@ class S2V {
 	// TODO: Not killing OBS process.
 	static function killProcesses(): Void {
 		Sys.println('Closing...');
+		ws.stopRecording();
+		Sys.sleep(.2);
 		ws.close();
 		dolphinProcess.kill();
 		obsProcess.kill();
@@ -143,6 +146,24 @@ class S2V {
 					case '[GAME_END]': onGameEnd();
 				}
 
+			}
+
+		});
+	}
+
+	static function onClose(): Void {
+		Thread.create(function() {
+
+			while (true) {
+				var out = '';
+
+				try {
+					out = Sys.stdin().readLine();
+				} catch (e: haxe.io.Eof) {
+					break;
+				}
+
+				if (out == '!CLOSE') killProcesses();
 			}
 
 		});

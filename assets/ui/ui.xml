@@ -60,5 +60,6 @@
 	<hbox id="buttons" width="100%">
 		<button id="saveButton" text="Save" horizontalAlign="center"/>
 		<button id="startButton" text="Start" horizontalAlign="center"/>
+		<button id="exitButton" text="Exit" horizontalAlign="center"/>
 	</hbox>
 </vbox>

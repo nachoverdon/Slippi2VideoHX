@@ -1,5 +1,7 @@
 package ui;
 
+import haxe.ui.components.Label;
+import sys.io.Process;
 import haxe.ui.containers.HBox;
 import haxe.ui.Toolkit;
 import lime.ui.FileDialog;
@@ -15,6 +17,8 @@ import haxe.ui.macros.ComponentMacros;
 
 class UI extends openfl.display.Sprite
 {
+	static var s2vProcess: Process;
+
 	static var leftColumn: VBox;
 	static var rightColumn: VBox;
 
@@ -23,6 +27,8 @@ class UI extends openfl.display.Sprite
 
 	static var paths: Grid;
 	static var others: Grid;
+
+	static var slippi2video: Label;
 
 	static var dolphinTextField: TextField;
 	static var replaysTextField: TextField;
@@ -47,6 +53,8 @@ class UI extends openfl.display.Sprite
 	static var kill: CheckBox;
 
 	static var saveButton: Button;
+	static var startButton: Button;
+	static var exitButton: Button;
 
 	public function new() {
 		super();
@@ -67,6 +75,8 @@ class UI extends openfl.display.Sprite
 
 		paths = ui.findComponent('paths', Grid);
 		others = ui.findComponent('others', Grid);
+
+		slippi2video = ui.findComponent('slippi2video', Label);
 
 		dolphinTextField = ui.findComponent('dolphinTextField', TextField);
 		replaysTextField = ui.findComponent('replaysTextField', TextField);
@@ -91,6 +101,8 @@ class UI extends openfl.display.Sprite
 		kill = ui.findComponent('kill', CheckBox);
 
 		saveButton = ui.findComponent('saveButton', Button);
+		startButton = ui.findComponent('startButton', Button);
+		exitButton = ui.findComponent('exitButton', Button);
 
 		setEventListeners();
 	}
@@ -131,6 +143,10 @@ class UI extends openfl.display.Sprite
 		);
 
 		saveButton.onClick = saveConfig;
+
+		startButton.onClick = launchS2V;
+
+		exitButton.onClick = exit;
 	}
 
 	static function setStyles(): Void {
@@ -149,6 +165,20 @@ class UI extends openfl.display.Sprite
 
 	static function saveConfig(evt: MouseEvent): Void {
 
+	}
+
+	static function launchS2V(evt: MouseEvent): Void {
+		var path = new haxe.io.Path(Sys.programPath());
+		s2vProcess = new Process('${path.dir}/S2V.exe');
+	}
+
+	static function exit(evt: MouseEvent): Void {
+		if (s2vProcess != null) s2vProcess.stdin.writeString('!CLOSE');
+		slippi2video.text = "Shuting down...";
+
+		haxe.Timer.delay(function() {
+			Sys.exit(0);
+		}, 3000);
 	}
 
 }
