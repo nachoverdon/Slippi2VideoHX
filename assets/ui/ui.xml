@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hbox width="100%" height="100%">
+	<vbox width="100%" height="100%">
+		<grid id="paths" columns="3">
+			<label text="Dolphin.exe" verticalAlign="center"/>
+			<textfield id="dolphinPath" placeholder="Dolphin.exe" width="150" height="30"/>
+			<button id="dolphinButton" text="Browse" height="30"/>
+
+			<label text="Replays" verticalAlign="center"/>
+			<textfield id="replaysPath" placeholder="Replays" width="150" height="30"/>
+			<button id="replaysButton" text="Browse" height="30"/>
+
+			<label text="OBS.exe" verticalAlign="center"/>
+			<textfield id="obsPath" placeholder="OBS.exe" width="150" height="30"/>
+			<button id="obsButton" text="Browse" height="30"/>
+
+			<label text="Melee.iso" verticalAlign="center"/>
+			<textfield id="meleePath" placeholder="Melee.iso" width="150" height="30"/>
+			<button id="meleeButton" text="Browse" height="30"/>
+
+			<label text="Videos" verticalAlign="center"/>
+			<textfield id="videosPath" placeholder="Videos" width="150" height="30"/>
+			<button id="videosButton" text="Browse" height="30"/>
+		</grid>
+	</vbox>
+	<vbox width="100%" height="100%">
+		<grid id="others" columns="2">
+			<label text="Port" verticalAlign="center"/>
+			<textfield id="port" width="150" height="30"/>
+
+			<label text="Password" verticalAlign="center"/>
+			<textfield id="password" placeholder="password" width="150" height="30"/>
+
+			<label text="Profile" verticalAlign="center"/>
+			<textfield id="profile" placeholder="Profile" width="150" height="30"/>
+
+			<label text="Scene" verticalAlign="center"/>
+			<textfield id="scene" placeholder="Scene" width="150" height="30"/>
+		</grid>
+		<grid id="switches" columns="2">
+			<label text="Recursive" verticalAlign="center"/>
+			<switch id="recursive" width="60" height="20"/>
+
+			<label text="Rename" verticalAlign="center"/>
+			<switch id="rename" width="60" height="20"/>
+
+			<label text="Restructure" verticalAlign="center"/>
+			<switch id="restructure" width="60" height="20"/>
+
+			<label text="Kill" verticalAlign="center"/>
+			<switch id="kill" width="60" height="20"/>
+		</grid>
+	</vbox>
+</hbox>

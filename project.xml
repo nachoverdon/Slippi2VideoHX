@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="Slippi2Video" package="com.sample.slippi2video" version="1.0.0" company="Company Name" />
+	<app main="ui.UI" path="build" file="Slippi2Video" />
+
+	<window
+		background="#22be34"
+		width="640"
+		height="480"
+		color-depth="32"
+		/>
+	<!--
+		hardware="true"
+		allow-shaders="true"
+		require-shaders="true"
+		depth-buffer="false"
+		stencil-buffer="false"
+
+		fullscreen="false"
+		resizable="false"
+		vsync="true"
+		always-on-top="true"
+		borderless="true"
+	-->
+
+	<source path="src" />
+
+	<haxelib name="lime" />
+	<haxelib name="openfl" />
+	<haxelib name="haxeui-core" />
+	<haxelib name="haxeui-openfl" />
+
+	<assets path="assets" />
+
+</project>

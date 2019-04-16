@@ -2,5 +2,9 @@
 -main S2V
 -lib haxe-ws
 -lib slippihx
+-lib lime
+-lib haxeui-core
+-lib haxeui-openfl
 -cpp build/cpp
 -D scriptable
+--no-output

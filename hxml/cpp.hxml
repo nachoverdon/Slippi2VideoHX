@@ -1,0 +1,6 @@
+-cp ../src
+-main S2V
+-lib haxe-ws
+-lib slippihx
+-cpp ../build/cpp
+-D scriptable

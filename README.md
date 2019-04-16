@@ -53,7 +53,11 @@ Script to convert Project Slippi replays into video using OBS
 
 # Build
 Requires:
-
+S2V.exe
 * Haxe 4 rc2
 * hxcpp
 * slippihx and haxe-ws libraries
+Slippi2Video.exe
+* Haxe 3.4.7+
+* hxcpp
+* lime
