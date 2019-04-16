@@ -1,62 +1,64 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<grid columns="2">
-<hbox width="100%" height="50%">
-	<vbox id="leftColumn" width="50%" height="100%">
-		<grid id="paths" columns="3">
-			<label text="Dolphin.exe" verticalAlign="center"/>
-			<textfield id="dolphinPath" placeholder="Dolphin.exe" width="150" height="30"/>
-			<button id="dolphinButton" text="Browse" height="30"/>
-
-			<label text="Replays" verticalAlign="center"/>
-			<textfield id="replaysPath" placeholder="Replays" width="150" height="30"/>
-			<button id="replaysButton" text="Browse" height="30"/>
-
-			<label text="OBS.exe" verticalAlign="center"/>
-			<textfield id="obsPath" placeholder="OBS.exe" width="150" height="30"/>
-			<button id="obsButton" text="Browse" height="30"/>
-
-			<label text="Melee.iso" verticalAlign="center"/>
-			<textfield id="meleePath" placeholder="Melee.iso" width="150" height="30"/>
-			<button id="meleeButton" text="Browse" height="30"/>
-
-			<label text="Videos" verticalAlign="center"/>
-			<textfield id="videosPath" placeholder="Videos" width="150" height="30"/>
-			<button id="videosButton" text="Browse" height="30"/>
-		</grid>
+<vbox width="100%" height="100%">
+	<vbox width="100%">
+		<label id="slippi2video" text="Slippi2Video" verticalAlign="center" horizontalAlign="center"/>
 	</vbox>
-	<vbox id="rightColumn" width="50%" height="100%">
-		<grid id="others" columns="2">
-			<label text="Port" verticalAlign="center"/>
-			<textfield id="port" width="150" height="30"/>
 
-			<label text="Password" verticalAlign="center"/>
-			<textfield id="password" placeholder="password" width="150" height="30"/>
+	<hbox id="components" width="100%" height="250">
 
-			<label text="Profile" verticalAlign="center"/>
-			<textfield id="profile" placeholder="Profile" width="150" height="30"/>
+		<vbox id="leftColumn" width="50%" height="100%">
 
-			<label text="Scene" verticalAlign="center"/>
-			<textfield id="scene" placeholder="Scene" width="150" height="30"/>
-		</grid>
-	</vbox>
-</hbox>
-<hbox id="switchesColumn" width="100%" height="50%">
-	<grid id="switches" columns="2">
-		<grid columns="2">
-			<label text="Recursive" verticalAlign="center"/>
-			<switch id="recursive" width="60" height="20"/>
+			<grid id="paths" columns="3">
+				<label text="Dolphin.exe" verticalAlign="center"/>
+				<textfield id="dolphinTextField" width="150" height="40"/>
+				<button id="dolphinButton" text="Browse" height="40"/>
 
-			<label text="Rename" verticalAlign="center"/>
-			<switch id="rename" width="60" height="20"/>
-		</grid>
-		<grid columns="2">
+				<label text="Replays" verticalAlign="center"/>
+				<textfield id="replaysTextField" width="150" height="40"/>
+				<button id="replaysButton" text="Browse" height="40"/>
 
-			<label text="Restructure" verticalAlign="center"/>
-			<switch id="restructure" width="60" height="20"/>
+				<label text="OBS.exe" verticalAlign="center"/>
+				<textfield id="obsTextField" width="150" height="40"/>
+				<button id="obsButton" text="Browse" height="40"/>
 
-			<label text="Kill" verticalAlign="center"/>
-			<switch id="kill" width="60" height="20"/>
-		</grid>
-	</grid>
-</hbox>
-</grid>
+				<label text="Melee.iso" verticalAlign="center"/>
+				<textfield id="meleeTextField" width="150" height="40"/>
+				<button id="meleeButton" text="Browse" height="40"/>
+
+				<label text="Videos" verticalAlign="center"/>
+				<textfield id="videosTextField" width="150" height="40"/>
+				<button id="videosButton" text="Browse" height="40"/>
+			</grid>
+
+		</vbox>
+
+		<vbox id="rightColumn" width="50%" height="100%">
+
+			<grid id="others" columns="2">
+				<label text="Port" verticalAlign="center"/>
+				<textfield id="port" width="150" height="30"/>
+
+				<label text="Password" verticalAlign="center"/>
+				<textfield id="password" width="150" height="30"/>
+
+				<label text="Profile" verticalAlign="center"/>
+				<textfield id="profile" width="150" height="30"/>
+
+				<label text="Scene" verticalAlign="center"/>
+				<textfield id="scene" width="150" height="30"/>
+
+				<checkbox id="recursive" text="Recursive"/>
+				<checkbox id="rename" text="Rename"/>
+
+				<checkbox id="restructure" text="Restructure"/>
+				<checkbox id="kill" text="Kill"/>
+			</grid>
+		</vbox>
+
+	</hbox>
+
+	<hbox id="buttons" width="100%">
+		<button id="saveButton" text="Save" horizontalAlign="center"/>
+		<button id="startButton" text="Start" horizontalAlign="center"/>
+	</hbox>
+</vbox>
