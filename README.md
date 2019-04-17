@@ -1,5 +1,8 @@
 # Slippi2Video
+![](https://i.imgur.com/OHvmaBV.png)
+
 Script to convert Project Slippi replays into video using OBS
+
 
 # Requires
 * **Windows**.
