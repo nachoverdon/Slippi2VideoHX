@@ -11,19 +11,6 @@
 		height="350"
 		color-depth="32"
 		/>
-	<!--
-		hardware="true"
-		allow-shaders="true"
-		require-shaders="true"
-		depth-buffer="false"
-		stencil-buffer="false"
-
-		fullscreen="false"
-		resizable="false"
-		vsync="true"
-		always-on-top="true"
-		borderless="true"
-	-->
 
 	<source path="src" />
 
@@ -34,5 +21,7 @@
 	<haxelib name="slippihx" />
 
 	<assets path="assets" />
+
+	<icon path="assets/slippi2video.svg" embed="true"/>
 
 </project>
