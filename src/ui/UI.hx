@@ -1,5 +1,7 @@
 package ui;
 
+import sys.io.File;
+import haxe.Json;
 import haxe.ui.components.Label;
 import sys.io.Process;
 import haxe.ui.containers.HBox;
@@ -188,22 +190,23 @@ class UI extends openfl.display.Sprite
 	}
 
 	static function saveConfig(evt: MouseEvent): Void {
+		var obs: ObsConfig = {
+			exe: obsTextField.text,
+			port: portTextField.text,
+			password: passwordTextField.text,
+			profile: profileTextField.text,
+			scene: sceneTextField.text,
+			videos: videosTextField.text,
+			rename: rename.selected,
+			restructure: restructure.selected,
+			kill: kill.selected
+		};
 		var cfg: Config = {
-			cfg.dolphin = dolphinTextField.text;
-			cfg.replays = replaysTextField.text;
-			cfg.obs.exe = obsTextField.text;
-			cfg.melee = meleeTextField.text;
-			cfg.obs.videos = videosTextField.text;
-
-			cfg.obs.port = portTextField.text;
-			cfg.obs.password = passwordTextField.text;
-			cfg.obs.profile = profileTextField.text;
-			cfg.obs.scene = sceneTextField.text;
-
-			cfg.recursive = recursive.selected;
-			cfg.obs.rename = rename.selected;
-			cfg.obs.restructure = restructure.selected;
-			cfg.obs.kill = kill.selected;
+			dolphin: dolphinTextField.text,
+			replays: replaysTextField.text,
+			obs: obs,
+			melee: meleeTextField.text,
+			recursive: recursive.selected
 		};
 
 		try {

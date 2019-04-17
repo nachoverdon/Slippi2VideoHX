@@ -12,7 +12,6 @@ typedef Config = {
 	var dolphin: String;
 	var replays: String;
 	var recursive: Bool;
-	var obsOptions: ObsConfig;
 }
 
 typedef ObsConfig = {

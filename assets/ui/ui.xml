@@ -10,24 +10,24 @@
 
 			<grid id="paths" columns="3">
 				<label text="Dolphin.exe" verticalAlign="center"/>
-				<textfield id="dolphinTextField" width="150" height="40"/>
-				<button id="dolphinButton" text="Browse" height="40"/>
+				<textfield id="dolphinTextField" width="150" height="30"/>
+				<button id="dolphinButton" text="Browse" height="30"/>
 
 				<label text="Replays" verticalAlign="center"/>
-				<textfield id="replaysTextField" width="150" height="40"/>
-				<button id="replaysButton" text="Browse" height="40"/>
+				<textfield id="replaysTextField" width="150" height="30"/>
+				<button id="replaysButton" text="Browse" height="30"/>
 
 				<label text="OBS.exe" verticalAlign="center"/>
-				<textfield id="obsTextField" width="150" height="40"/>
-				<button id="obsButton" text="Browse" height="40"/>
+				<textfield id="obsTextField" width="150" height="30"/>
+				<button id="obsButton" text="Browse" height="30"/>
 
 				<label text="Melee.iso" verticalAlign="center"/>
-				<textfield id="meleeTextField" width="150" height="40"/>
-				<button id="meleeButton" text="Browse" height="40"/>
+				<textfield id="meleeTextField" width="150" height="30"/>
+				<button id="meleeButton" text="Browse" height="30"/>
 
 				<label text="Videos" verticalAlign="center"/>
-				<textfield id="videosTextField" width="150" height="40"/>
-				<button id="videosButton" text="Browse" height="40"/>
+				<textfield id="videosTextField" width="150" height="30"/>
+				<button id="videosButton" text="Browse" height="30"/>
 			</grid>
 
 		</vbox>
