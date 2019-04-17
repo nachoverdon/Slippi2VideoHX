@@ -6,7 +6,7 @@ Script to convert Project Slippi replays into video using OBS
 * [**Project Slippi desktop app**](https://github.com/project-slippi/slippi-desktop-app/releases). Comes with a custom version of Dolphin, select this one when setting up your `config.json`. Configure Dolphin as you like. If the changes are not getting saved, check that the folder is not read only or that you have permissions. The script assumes that Dolphin is running at a constant framerate of 60 FPS, so desyncs may occur if the frames drop.
 * [**OBS**](https://obsproject.com/) installed. Also you need to configure OBS the way you want to record the game, so create a scene and add Dolphin as source, etc., and add that info to the `config.json` file or set the `profile` and `scene` to `null` and the script will use the last selected profile/scene as target.
 * [**OBS Websocket**](https://github.com/Palakis/obs-websocket/releases) installed and configured to match the settings in the `config.json` file.
-* **Fill `config.json`** with the paths to the replays folder, Dolphin.exe (Slippi), Super Smash Bros. Melee NTSC 1.02 version .iso and your OBS executable, as well as the OBS Websocket data.
+* **Launch Slippi2Video.exe**, configure it with the paths to the replays folder, Dolphin.exe (Slippi), Super Smash Bros. Melee NTSC 1.02 version .iso and your OBS executable, as well as the OBS Websocket data and press Start. Alternatively, you can fill `config.json` and execute `S2V.exe`.
 
 `config.json` should look like this (without comments):
 ```js
@@ -27,6 +27,7 @@ Script to convert Project Slippi replays into video using OBS
         "password": "slippi2video",
         // Path to the folder where the videos will be stored.
         "videos": "Z:\\Other\\Videos",
+        // OBS Scene/profile options.
         // Set to "" to use the default.
         // NOT IMPLEMENTED YET
         "profile": "",
@@ -43,19 +44,12 @@ Script to convert Project Slippi replays into video using OBS
         // Shutdown OBS after processing all the replays.
         // NOT IMPLEMENTED YET
         "kill": true,
-        // OBS Scene/profile options.
     }
 }
 ```
-
-* **Execute `s2v.exe`**.
-* **Pray** for it to work.
 
 # Build
 Requires:
 * Haxe 4 rc2
 * hxcpp
-S2V.exe
-* slippihx and haxe-ws libraries
-Slippi2Video.exe
-* openfl, lime, haxeui-core and haxeui-openfl libraries
+* slippihx, haxe-ws, openfl, lime, haxeui-core and haxeui-openfl libraries
