@@ -14,6 +14,7 @@ import haxe.ui.components.Button;
 import haxe.ui.components.CheckBox;
 import haxe.ui.components.TextField;
 import haxe.ui.macros.ComponentMacros;
+import s2v.FileHandler;
 
 class UI extends openfl.display.Sprite
 {
@@ -61,6 +62,7 @@ class UI extends openfl.display.Sprite
 
 		initComponents();
 		setStyles();
+		loadConfig();
 	}
 
 	static function initComponents(): Void {
@@ -160,11 +162,55 @@ class UI extends openfl.display.Sprite
 	}
 
 	static function loadConfig(): Void {
+		try {
+			var cfg: Config = FileHandler.readConfig();
+
+			dolphinTextField.text = cfg.dolphin;
+			replaysTextField.text = cfg.replays;
+			obsTextField.text = cfg.obs.exe;
+			meleeTextField.text = cfg.melee;
+			videosTextField.text = cfg.obs.videos;
+
+			portTextField.text = cfg.obs.port;
+			passwordTextField.text = cfg.obs.password;
+			profileTextField.text = cfg.obs.profile;
+			sceneTextField.text = cfg.obs.scene;
+
+			recursive.selected = cfg.recursive;
+			rename.selected = cfg.obs.rename;
+			restructure.selected = cfg.obs.restructure;
+			kill.selected = cfg.obs.kill;
+
+		} catch (e: Dynamic) {
+			showMessage('Unable to load config...');
+		}
 
 	}
 
 	static function saveConfig(evt: MouseEvent): Void {
+		var cfg: Config = {
+			cfg.dolphin = dolphinTextField.text;
+			cfg.replays = replaysTextField.text;
+			cfg.obs.exe = obsTextField.text;
+			cfg.melee = meleeTextField.text;
+			cfg.obs.videos = videosTextField.text;
 
+			cfg.obs.port = portTextField.text;
+			cfg.obs.password = passwordTextField.text;
+			cfg.obs.profile = profileTextField.text;
+			cfg.obs.scene = sceneTextField.text;
+
+			cfg.recursive = recursive.selected;
+			cfg.obs.rename = rename.selected;
+			cfg.obs.restructure = restructure.selected;
+			cfg.obs.kill = kill.selected;
+		};
+
+		try {
+			File.saveContent('config.json', Json.stringify(cfg));
+		} catch (e: Dynamic) {
+			showMessage('Unable to save config...');
+		}
 	}
 
 	static function launchS2V(evt: MouseEvent): Void {
@@ -174,11 +220,18 @@ class UI extends openfl.display.Sprite
 
 	static function exit(evt: MouseEvent): Void {
 		if (s2vProcess != null) s2vProcess.stdin.writeString('!CLOSE');
-		slippi2video.text = "Shuting down...";
+		slippi2video.text = 'Shuting down...';
 
 		haxe.Timer.delay(function() {
 			Sys.exit(0);
 		}, 3000);
+	}
+
+	static function showMessage(message: String): Void {
+		slippi2video.text = message;
+		haxe.Timer.delay(function() {
+			slippi2video.text = 'Slippi2Video';
+		}, 2000);
 	}
 
 }

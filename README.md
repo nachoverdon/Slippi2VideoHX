@@ -27,10 +27,10 @@ Script to convert Project Slippi replays into video using OBS
         "password": "slippi2video",
         // Path to the folder where the videos will be stored.
         "videos": "Z:\\Other\\Videos",
-        // Set to null to use the default.
+        // Set to "" to use the default.
         // NOT IMPLEMENTED YET
-        "profile": null,
-        // Set to null to use the default.
+        "profile": "",
+        // Set to "" to use the default.
         // NOT IMPLEMENTED YET
         "scene": "Slippi"
         // Renames the video files with the name from the .slp files.

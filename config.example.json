@@ -7,7 +7,7 @@
         "exe": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
         "port": "4444",
         "password": "slippi2video",
-        "profile": null,
+        "profile": "",
         "scene": "Slippi",
         "videos": "Z:\\Other\\Videos",
         "rename": true,

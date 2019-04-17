@@ -34,7 +34,7 @@ class S2V {
 			Sys.println('Connected.');
 
 			ws.getRecordingFolder();
-			if (cfg.obs.videos != null) ws.setRecordingFolder(cfg.obs.videos);
+			if (cfg.obs.videos != '') ws.setRecordingFolder(cfg.obs.videos);
 
 			// For each replay, load slippi and record video until the replay
 			// is finished.

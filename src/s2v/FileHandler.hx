@@ -19,9 +19,9 @@ typedef ObsConfig = {
 	var exe: String;
 	var port: String;
 	var password: String;
-	var profile: Null<String>;
-	var scene: Null<String>;
-	var videos: Null<String>;
+	var profile: String;
+	var scene: String;
+	var videos: String;
 	var rename: Bool;
 	var restructure: Bool;
 	var kill: Bool;
