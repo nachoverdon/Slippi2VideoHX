@@ -2,8 +2,8 @@ package s2v;
 
 import haxe.Json;
 import sys.io.File;
-import haxe.io.Path;
 import sys.FileSystem;
+import haxe.io.Path;
 import slippihx.SlpDecoder;
 
 typedef Config = {
@@ -29,14 +29,18 @@ typedef ObsConfig = {
 typedef ReplayCommFile = {
     var replay: String;
 	@:optional var mode: String;
+	@:optional var commandId: String;
     @:optional var isRealTimeMode: Bool;
     @:optional var queue: Array<ReplayInfo>;
+    @:optional var outputOverlayFiles: Bool;
+	@:optional var startFrame: Int;
+	@:optional var endFrame: Int;
 }
 
 typedef ReplayInfo = {
 	var path: String;
-	var startFrame: Int;
-	var lastFrame: Int;
+	@:optional var startFrame: Int;
+	@:optional var endFrame: Int;
 }
 
 class FileHandler {
@@ -53,9 +57,18 @@ class FileHandler {
     }
 
     public static function setReplay(replayPath: String): Void {
-        var commFile: ReplayCommFile = {
-			replay: replayPath
-		};
+		var commFile: ReplayCommFile;
+
+		if (replayPath == '') {
+			commFile = { replay: '' };
+		} else {
+			commFile = {
+				replay: replayPath,
+				commandId: '${Sys.time()}',
+				endFrame: getFrames(replayPath)
+			};
+		}
+
 		try {
 			File.saveContent('s2v.json', Json.stringify(commFile));
 		} catch (e: Dynamic) {

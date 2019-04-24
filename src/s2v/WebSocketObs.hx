@@ -19,6 +19,7 @@ class WebSocketObs {
     var ip: String;
     var port: String;
     var pw: String;
+    var isRecording: Bool = false;
 
     public function new(?ip: String = 'localhost', ?port: String = '4444',
     ?pw: String = 'slippi', ?debug = false) {
@@ -26,7 +27,7 @@ class WebSocketObs {
         this.port = port;
         this.pw = pw;
 
-        timer = new Timer(100);
+        timer = new Timer(60);
 
         ws = WebSocket.create('ws://$ip:$port', ['echo-protocol'], null, debug);
     }
@@ -51,8 +52,10 @@ class WebSocketObs {
                         onReady(message);
                     });
                 case 'StartRecording':
+                    isRecording = true;
                     trace('Recording...');
                 case 'StopRecording':
+                    isRecording = false;
                     trace('Stopped recording.');
                 case 'SetRecordingFolder':
                     trace('Recording folder set.');
@@ -85,11 +88,20 @@ class WebSocketObs {
         ws.close();
     }
 
-    public function startRecording() sendRequest(ws, 'StartRecording');
+    public function startRecording() {
+        if (isRecording) return;
 
-    public function stopRecording() sendRequest(ws, 'StopRecording');
+        sendRequest(ws, 'StartRecording');
+    }
+
+    public function stopRecording() {
+        if (!isRecording) return;
+
+        sendRequest(ws, 'StopRecording');
+    }
 
     public function setRecordingFolder(folder: String) {
+        trace('Setting recording folder to $folder...');
         sendRequest(ws, 'SetRecordingFolder', null, [{
             name: 'rec-folder', value: folder
         }]);

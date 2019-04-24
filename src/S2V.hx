@@ -89,25 +89,32 @@ class S2V {
 	}
 
 	static function recordVideo(replayPath: String): Void {
-		var frames = FileHandler.getFrames(replayPath);
+		// var frames = FileHandler.getFrames(replayPath);
 		// 2 seconds is aprox. the time it takes for the Game! screen to end.
 		// 116 frames? makes sense coz 116 + 124 = 240, 240 / 60 = 4 seconds.
-		var seconds: Float = (frames / 60) + (116 / 60);
+		// var seconds: Float = (frames / 60) + (116 / 60);
 
 		var path = new Path(replayPath);
 		Sys.println('Recording replay ${path.file}.${path.ext}...');
 
 		// TODO: Replace this with a signal from Dolphin. as well as
 		// ws.stopRecording() (stdout/stderr? socket?)
-		// communicateWithDolphin(ws.startRecording, ws.stopRecording);
-		// As soon as it connects, starts the replay and records.
 		FileHandler.setReplay(replayPath);
-		ws.startRecording();
+		// Sys.sleep(0.1);
+		var wait = true;
+		communicateWithDolphin(ws.startRecording, () -> {
+			ws.stopRecording();
+			wait = false;
+		});
+		// As soon as it connects, starts the replay and records.
+		// ws.startRecording();
 
 
 		// Waits for the duration of the replay and then stops it.
-		Sys.sleep(seconds);
-		ws.stopRecording();
+		// Sys.sleep(seconds);
+		// ws.stopRecording();
+		// Sys.sleep(2);
+		while (wait) {}
 		Sys.sleep(2);
 	}
 
@@ -129,21 +136,23 @@ class S2V {
 
 	static function communicateWithDolphin(onGameStart: Void -> Void, onGameEnd: Void -> Void): Void {
 		Thread.create(function() {
-			// Sys.println('Duration:\t[FRAMES: ${frames}]\t[SECONDS: $seconds]');
-			// Sys.println('lastFrame:\t[FRAMES: ${frames - 124}]\t[SECONDS: ${seconds - (124 / 60)}]');
 
 			while (true) {
 				var out = '';
 
 				try {
 					out = dolphinProcess.stdout.readLine();
+					trace(out);
 				} catch (e: haxe.io.Eof) {
 					break;
 				}
 
 				switch (out) {
 					case '[GAME_START]': onGameStart();
-					case '[GAME_END]': onGameEnd();
+					case '[GAME!]':
+						Sys.sleep(115 / 60);
+						onGameEnd();
+					case '[END_FRAME]' | '[LRAS]': onGameEnd();
 				}
 
 			}
