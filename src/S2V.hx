@@ -29,16 +29,34 @@ class S2V {
 		ws = new WebSocketObs('localhost', cfg.obs.port, cfg.obs.password, true);
 
 		var oldRecFolder: String;
+		var tempDir: String;
 
 		function onReady(message: String) {
 			Sys.println('Connected.');
 
 			ws.getRecordingFolder();
-			if (cfg.obs.videos != '') ws.setRecordingFolder(cfg.obs.videos);
+
+			if (cfg.obs.videos != '') {
+				tempDir = FileHandler.tempDir(cfg.obs.videos);
+				ws.setRecordingFolder(tempDir);
+			}
 
 			// For each replay, load slippi and record video until the replay
 			// is finished.
-			for (replay in replays) recordVideo(replay);
+			for (replay in replays) {
+				recordVideo(replay);
+
+				if (cfg.obs.rename) {
+					// if (cfg.obs.restructure) ... else
+					FileHandler.moveFiles(tempDir, cfg.obs.videos, new Path(replay).file);
+					trace('removing temp dir...');
+					trace(tempDir);
+					FileHandler.removeDir(tempDir);
+					trace('Temp dir removed.');
+
+				}
+			}
+
 			ws.setRecordingFolder(oldRecFolder);
 
 			Sys.sleep(2);

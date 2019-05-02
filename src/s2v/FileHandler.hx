@@ -105,4 +105,28 @@ class FileHandler {
 
 		return replays;
 	}
+
+	public static function tempDir(path: String): String {
+		var name = 's2v_${Date.now().getTime()}';
+		var dir = '$path\\$name';
+		FileSystem.createDirectory(dir);
+		return dir;
+	}
+
+	public static function moveFiles(oldPath: String, newPath: String, ?name: String = null): Void {
+		for (file in FileSystem.readDirectory(oldPath)) {
+			var ext = Path.extension('$oldPath\\$file');
+			var newFile = '$newPath\\';
+			newFile += name == null ? '$file' : '$name';
+			if (FileSystem.exists('$newFile.$ext')) {
+				newFile += '_${Date.now().getTime()}';
+			}
+			FileSystem.rename('$oldPath\\$file', '$newFile.$ext');
+
+		}
+	}
+
+	public static function removeDir(path: String) {
+		FileSystem.deleteDirectory(path);
+	}
 }
