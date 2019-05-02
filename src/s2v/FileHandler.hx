@@ -127,6 +127,6 @@ class FileHandler {
 	}
 
 	public static function removeDir(path: String) {
-		FileSystem.deleteDirectory(path);
+		if (FileSystem.exists(path)) FileSystem.deleteDirectory(path);
 	}
 }

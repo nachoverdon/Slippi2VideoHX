@@ -49,11 +49,7 @@ class S2V {
 				if (cfg.obs.rename) {
 					// if (cfg.obs.restructure) ... else
 					FileHandler.moveFiles(tempDir, cfg.obs.videos, new Path(replay).file);
-					trace('removing temp dir...');
-					trace(tempDir);
 					FileHandler.removeDir(tempDir);
-					trace('Temp dir removed.');
-
 				}
 			}
 

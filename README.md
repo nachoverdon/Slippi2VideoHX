@@ -37,8 +37,9 @@ Script to convert Project Slippi replays into video using OBS
         // Set to "" to use the default.
         // NOT IMPLEMENTED YET
         "scene": "Slippi"
-        // Renames the video files with the name from the .slp files.
-        // NOT IMPLEMENTED YET
+        // Renames the video files with the name from the .slp files. If a video
+        // with the same name already exists, it will append a long number to
+        // the name to avoid conflicts.
         "rename": true,
         // Sort the video files with the same structure that the replays folder has.
         // Ex: /SlippiReplays/Station1/replay1.slp -> /*obsVideos*/Station1/replay1.mp4
