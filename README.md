@@ -1,3 +1,6 @@
+# Project discontinued.
+Please, use [Project Clippi](https://github.com/vinceau/project-clippi) instead.
+
 # Slippi2Video
 ![](https://i.imgur.com/OHvmaBV.png)
 
